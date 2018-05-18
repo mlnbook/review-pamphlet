@@ -37,6 +37,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 [Redis CAS乐观锁实现](https://www.jianshu.com/p/08a1a9f2f4dd)
 
 # 4. Redis持久化的几种方式
+![image](http://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg)
 
 1. RDB持久化
    - 原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化
@@ -54,7 +55,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 4.常用配置
 ![image](http://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg)
    
-![image](http://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg)
+
 
 
 
