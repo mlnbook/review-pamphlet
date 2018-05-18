@@ -18,6 +18,8 @@
 3. 得到结果后，各个机器只需拿出各自出现次数最多的前N个数据，然后汇总，选出所有的数据中出现次数最多的前N个数据，这实际上就是Reduce过程。
 4. 对于Map函数，采用Hash算法，将Hash值相同的数据交给同一个Reduce task；
 5. 对于第一个Reduce函数，采用HashMap统计出每个词出现的频率，对于第二个Reduce 函数，统计所有Reduce task，输出数据中的top K即可。  
+参考
+[海量数据处理 - 10亿个数中找出最大的10000个数（top K问题）](https://blog.csdn.net/zyq522376829/article/details/47686867)
 
 
 
