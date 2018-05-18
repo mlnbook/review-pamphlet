@@ -1,6 +1,6 @@
 # 1.Mapreduce
 
-## 1.1 mapreduce的过程
+## 1.1 Mapreduce的过程
 
 # 2.HDFS
 
