@@ -23,8 +23,6 @@ Redis的事务没有关系数据库事务提供的回滚（rollback）功能,需
   
   - 运行时错误： 运行错误指在命令执行时出现的错误，比如使用散列类型的命令操作集合类型的键，这种错误在实际执行之前Redis是无法发现的，所以在事务里这样的命令是会被Redis接受并执行的。如果事务里的一条命令出现了运行错误，事务里其他的命令依然会继续执行（包括出错命令之后的命令）
 ![image](http://static.lovedata.net/jpg/2018/5/18/6971ad099e1afbb9f65823c9749bc90b.jpg)
-
-
-参考
+5. 参考
 [Redis的并发控制](https://juejin.im/entry/5964bcd851882568b20dbd73)
 [redis的事务和watch](https://www.jianshu.com/p/361cb9cd13d5) 
