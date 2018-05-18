@@ -5,7 +5,7 @@
 使用watch 他会监测键，确保被修改后，后面的修改会失败SETNX 如果key不存在等同于set返回0，存在返回1
 [Redis的乐观同步方法 Redis的并发写入同步](https://blog.csdn.net/youxijishu/article/details/41956983)
 
-# 2. Redis的事物原理
+# 2. Redis的事物原理？
 
 1. 满足一致性和隔离性，不满足原子性和持久性（依赖具体持久模型）
 
