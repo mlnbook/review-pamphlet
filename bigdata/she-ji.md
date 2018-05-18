@@ -9,7 +9,7 @@
     
 ## 2.海量数据排序
 
-1. 原理同上，使用一个reducer，map输入后将value输出，利用mr的自动排序，然后reducer中用一个全局的linenumer变量 进行排号，这个号自增的，根据value list ，有多少个value，就输出多少次,用于处理相同值
+1. 原理同上，使用一个reducer，map输入后将value输出，利用mr的自动排序，然后reducer中用一个全局的linenumer变量 进行排号，这个号自增的，根据value list ，有多少个value，就输出多少次,用于处理相同值 
 
 
 
