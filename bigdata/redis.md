@@ -3,6 +3,7 @@
 #1. Redis的主键争用问题如何解决？
 
 使用watch 他会监测键，确保被修改后，后面的修改会失败SETNX 如果key不存在等同于set返回0，存在返回1
+
 [Redis的乐观同步方法 Redis的并发写入同步](https://blog.csdn.net/youxijishu/article/details/41956983)
 
 # 2. Redis的事物原理？
@@ -25,6 +26,8 @@ Redis的事务没有关系数据库事务提供的回滚（rollback）功能,需
 ![image](http://static.lovedata.net/jpg/2018/5/18/6971ad099e1afbb9f65823c9749bc90b.jpg)
 
 >参考
-[Redis的并发控制](https://juejin.im/entry/5964bcd851882568b20dbd73)
-[redis的事务和watch](https://www.jianshu.com/p/361cb9cd13d5) 
+
+>[Redis的并发控制](https://juejin.im/entry/5964bcd851882568b20dbd73) 
+
+>[redis的事务和watch](https://www.jianshu.com/p/361cb9cd13d5) 
 
