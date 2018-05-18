@@ -36,5 +36,32 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 
 [Redis CAS乐观锁实现](https://www.jianshu.com/p/08a1a9f2f4dd)
 
+# 4. Redis持久化的几种方式
+
+1. RDB持久化
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
