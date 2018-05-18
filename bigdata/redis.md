@@ -52,7 +52,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
    - 缺点： 速度较慢、文件比RDB大，
 3. 选择标准
 二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
-4.常用配置
+4. 常用配置
 ![image](http://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg)
 5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html)
    
