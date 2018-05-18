@@ -34,7 +34,5 @@
 
 # 3. Redis事务的CAS操作
 
-
-
-
+ 乐观锁实现使用Redis 自有的watch multi exec等命令进行封装
 
