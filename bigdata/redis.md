@@ -44,6 +44,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 
 2. AOF (append only file)
    - 原理是将Reids的操作日志以追加的方式写入文件
+   - AOF持久化以日志的形式记录服务器所处理的每一个写、删除操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。
 ![image](http://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg)
 
 
