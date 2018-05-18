@@ -8,6 +8,8 @@
  - Reduce 是合并，将相同的key值得value进行处理后在输出新的键值对作为最终结果
  - 将Map输出进行进一步整理并交给Reduce的过程就是Shuffle
  
+ ![image](http://static.lovedata.net/jpg/2018/5/18/f29021d32b6c5c447e53e7aebd4e326b.jpg)
+ 
  [MapReduce shuffle过程详解](https://blog.csdn.net/u014374284/article/details/49205885)
 
 # 2.HDFS
