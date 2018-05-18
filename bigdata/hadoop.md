@@ -2,6 +2,7 @@
 
 ## 1.1 Mapreduce的过程
 
+
 # 2.HDFS
 
 # 3.YARN
