@@ -5,4 +5,5 @@
   * [Redis](bigdata/redis.md)
   * [Hadoop](bigdata/hadoop.md)
   * [设计](bigdata/she-ji.md)
+  * [算法](bigdata/算法.md)
 
