@@ -30,3 +30,7 @@ Redis的事务没有关系数据库事务提供的回滚（rollback）功能,需
 [https://juejin.im/entry/5964bcd851882568b20dbd73](https://juejin.im/entry/5964bcd851882568b20dbd73 "Redis的并发控制")  
 [https://www.jianshu.com/p/361cb9cd13d5](https://www.jianshu.com/p/361cb9cd13d5)   redis的事务和watch
 
+
+
+
+
