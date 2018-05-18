@@ -1,3 +1,3 @@
 # 程序员面试宝典
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+本书汇集了本人在平常工作中遇到的一些面试题以及个人的解答。
