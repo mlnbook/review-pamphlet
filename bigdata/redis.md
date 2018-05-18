@@ -40,6 +40,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 
 1. RDB持久化
    - 原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化
+   - RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘，实际操作过程是fork一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储。
 
 2. AOF (append only file)
    - 原理是将Reids的操作日志以追加的方式写入文件
