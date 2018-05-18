@@ -1,9 +1,9 @@
-# Redis的主键争用问题如何解决？
+# 1. Redis的主键争用问题如何解决？
 
 使用watch 他会监测键，确保被修改后，后面的修改会失败SETNX 如果key不存在等同于set返回0，存在返回1  
 [https://blog.csdn.net/youxijishu/article/details/41956983](https://blog.csdn.net/youxijishu/article/details/41956983)
 
-# Redis的事物原理
+# 2. Redis的事物原理
 
 满足一致性和隔离性，不满足原子性和持久性（依赖具体持久模型）
 
@@ -29,6 +29,4 @@ Redis的事务没有关系数据库事务提供的回滚（rollback）功能,需
 
 [https://juejin.im/entry/5964bcd851882568b20dbd73](https://juejin.im/entry/5964bcd851882568b20dbd73 "Redis的并发控制")  
 [https://www.jianshu.com/p/361cb9cd13d5](https://www.jianshu.com/p/361cb9cd13d5)   redis的事务和watch
-
-
 
