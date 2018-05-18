@@ -52,15 +52,7 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 3. 选择标准
 二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
 4.常用配置
-RDB持久化配置
-Redis会将数据集的快照dump到dump.rdb文件中。此外，我们也可以通过配置文件来修改Redis服务器dump快照的频率，在打开6379.conf文件之后，我们搜索save，可以看到下面的配置信息：
-save 900 1              #在900秒(15分钟)之后，如果至少有1个key发生变化，则dump内存快照。save 300 10            #在300秒(5分钟)之后，如果至少有10个key发生变化，则dump内存快照。
-save 60 10000        #在60秒(1分钟)之后，如果至少有10000个key发生变化，则dump内存快照。
-AOF持久化配置
-在Redis的配置文件中存在三种同步方式，它们分别是：
-appendfsync always     #每次有数据修改发生时都会写入AOF文件。
-appendfsync everysec  #每秒钟同步一次，该策略为AOF的缺省策略。
-appendfsync no          #从不同步。高效但是数据不会被持久化。
+![image](http://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg)
 
    
 ![image](http://static.lovedata.net/jpg/2018/5/18/08b055b90a3f67829d73a2453a109c9d.jpg)
