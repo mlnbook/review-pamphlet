@@ -5,3 +5,4 @@
 ## 参考面试题
 
 1. [腾讯大数据面试及参考答案[2017]](https://zuciwang.com/show/390046.html)
+2. [大数据面试题](https://blog.csdn.net/xfg0218/article/details/52514585)
