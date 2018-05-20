@@ -20,11 +20,11 @@
 
 ### 1.5 hadoop的shuffer的概念
 
-### 1.5 hadoop的二次排序
+### 1.6 hadoop的二次排序
 
-### 1.6 如何减少Hadoop Map端到Reduce端的数据传输量？
+### 1.7 如何减少Hadoop Map端到Reduce端的数据传输量？
 
-### 1.7 hadoop常见的join操作？
+### 1.8 hadoop常见的join操作？
 
 ### 
 
