@@ -1,11 +1,11 @@
 # Summary
 
 * [Introduction](README.md)
+* [算法](bigdata/算法.md)
 * [大数据](da-shu-ju.md)
   * [Redis](bigdata/redis.md)
   * [Hadoop](bigdata/hadoop.md)
   * [设计](bigdata/she-ji.md)
-  * [算法](bigdata/算法.md)
   * [Hive](bigdata/hive.md)
   * [Hbase](bigdata/hbase.md)
   * [Other](bigdata/other.md)
