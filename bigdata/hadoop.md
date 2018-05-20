@@ -39,3 +39,5 @@
 ### 4.2 hadoop的优化
 
 ### 4.3 hadoop1与hadoop2的区别
+
+### 4.4 hadoop3的新特性
