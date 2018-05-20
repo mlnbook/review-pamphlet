@@ -10,9 +10,9 @@
   * [Hbase](bigdata/hbase.md)
   * [Other](bigdata/other.md)
   * [Spark](bigdata/spark.md)
-* [运维](yun-wei.md)
 * [Java](java.md)
   * [JVM](java/jvm.md)
+* [运维](yun-wei.md)
 * [分布式](fen-bu-shi.md)
 * [网络](wang-luo.md)
 
