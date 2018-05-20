@@ -14,6 +14,8 @@
 
 ### 1.2 谈谈数据倾斜，如何发生的，并给出优化方案
 
+### 1.3 简单概述hadoop的combinet与partition的区别
+
 ## 2.HDFS
 
 ## 3.YARN
