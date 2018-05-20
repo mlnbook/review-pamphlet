@@ -20,6 +20,8 @@
 
 ### 1.5 hadoop的shuffer的概念
 
+### 1.5 hadoop的二次排序
+
 ### 
 
 ## 2.HDFS
