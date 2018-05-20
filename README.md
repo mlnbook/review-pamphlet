@@ -6,3 +6,8 @@
 
 1. [腾讯大数据面试及参考答案[2017]](https://zuciwang.com/show/390046.html)
 2. [大数据面试题](https://blog.csdn.net/xfg0218/article/details/52514585)
+
+pengshuangbao/review-pamphlet: review pamphlet 
+Hadoop · GitBook 
+hadoop面试题 - 豆丁网 
+MapReduce程序运行中的排序问题 - CSDN博客 
