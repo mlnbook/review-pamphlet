@@ -55,14 +55,20 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
    4. 缺点： 速度较慢、文件比RDB大
 
 3. 选择标准
-   1. 二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
+  二者选择的标准，就是看系统是愿意牺牲一些性能，换取更高的缓存一致性（aof），还是愿意写操作频繁的时候，不启用备份来换取更高的性能，待手动运行save的时候，再做备份（rdb）。rdb这个就更有些 eventually consistent的意思了。
 
 4. 常用配置
   ![image](http://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg)
-5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html) 
+5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html)
 
 ## 5.Redis的缓存失效策略
 
 1. 通过DEL显示删除无用数据
 2. 通过过期时间（expiration）特性在给定的时限之后自动删除（自动删除）
 3. set hash 容器只能为整个键设置过期时间，而没法为单个元素设置
+4. ![image](http://static.lovedata.net/jpg/2018/5/20/0a668477aa07b7618904e1b4583ee8cf.jpg)
+5. 如果同时很多缓存失效，则会有缓存穿透问题
+6. [Redis的缓存策略和主键失效机制](http://www.cnblogs.com/binyue/p/3726842.html)
+7. 失效的内部实现 Redis 删除失效主键的方法主要有两种：
+    1. 消极方法（passive way），在主键被访问时如果发现它已经失效，那么就删除它
+    2. 积极方法（active way），周期性地从设置了失效时间的主键中选择一部分失效的主键删除
