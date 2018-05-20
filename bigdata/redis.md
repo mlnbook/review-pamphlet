@@ -56,6 +56,8 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 ![image](http://static.lovedata.net/jpg/2018/5/18/2bbde3193b3d168fa6e982c2416b2df7.jpg)
 5. [redis持久化的几种方式](https://www.cnblogs.com/chenliangcl/p/7240350.html)
    
+# 5.Redis的缓存失效策略
+
 
 
 
