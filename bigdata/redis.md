@@ -58,6 +58,10 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
    
 # 5.Redis的缓存失效策略
 
+1. 通过DEL显示删除无用数据
+2. 通过过期时间（expiration）特性在给定的时限之后自动删除（自动删除）
+3. set hash 容器只能为整个键设置过期时间，而没法为单个元素设置
+4. 
 
 
 
