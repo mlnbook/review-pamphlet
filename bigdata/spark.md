@@ -8,4 +8,14 @@
 
 ## 4.spark如何保证宕机迅速恢复?
 
-## 5. 
+## 5. RDD持久化原理
+
+## 6.Spark Streaming和Storm有何区别？ 应用场景？
+
+## 7.Spark的特点是什么
+
+## 8.Spark的三种提交模式是什么
+
+## 9.spark 实现高可用性：High Availability？
+
+## 10. spark中怎么解决内存泄漏问题？
