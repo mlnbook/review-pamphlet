@@ -11,3 +11,5 @@ pengshuangbao/review-pamphlet: review pamphlet
 Hadoop · GitBook 
 hadoop面试题 - 豆丁网 
 MapReduce程序运行中的排序问题 - CSDN博客 
+
+https://www.one-tab.com/page/TLWLkfT9TtO5GP5RokT7jw
