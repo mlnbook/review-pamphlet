@@ -1,7 +1,7 @@
 # Summary
 
 * [Introduction](README.md)
-* [算法](bigdata/算法.md)
+* [算法](算法.md)
 * [大数据](da-shu-ju.md)
   * [Redis](bigdata/redis.md)
   * [Hadoop](bigdata/hadoop.md)
