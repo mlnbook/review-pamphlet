@@ -71,14 +71,11 @@
   - 传入到reduce任务当中
 - [Hadoop-Shuffle过程](https://blog.csdn.net/clerk0324/article/details/52461135)
 
-
 ### 1.6 hadoop的二次排序
 
 ### 1.7 如何减少Hadoop Map端到Reduce端的数据传输量？
 
 ### 1.8 hadoop常见的join操作？
-
-### 
 
 ## 2.HDFS
 
