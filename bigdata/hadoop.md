@@ -40,7 +40,7 @@
 
 ### 1.3 简单概述hadoop的combine与partition的区别
 
-- combine分为map端和reduce端，作用是把同一个key的键值对合并在一起，可以自定义的。减少网络传输
+- combine分为map端和reduce端，作用是把同一个key的键值对合并在一起，可以自定义的。减少网络  传输
 - partition是分割map每个节点的结果，按照key分别映射给不同的reduce
 
 ### 1.4 MapReduce 中排序发生在哪几个阶段？这些排序是否可以避免？为什么？
