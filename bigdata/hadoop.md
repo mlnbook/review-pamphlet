@@ -22,7 +22,7 @@
   - 后果：处理某值的reduce非常耗时
   - **去重** distinct count(distinct xx)
   - 情形：某特殊值过多
-  - 后果：处理此特殊值的reduce耗时
+  - 后果：处理此特殊值的reduce耗时。
   - **连接 join**
   - 情形1：其中一个表较小，但是key集中。
   - 后果1：分发到某一个或几个Reduce上的数据远高于平均值
