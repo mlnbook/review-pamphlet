@@ -24,6 +24,8 @@
 
 ### 1.6 如何减少Hadoop Map端到Reduce端的数据传输量？
 
+### 1.7 hadoop常见的join操作？
+
 ### 
 
 ## 2.HDFS
