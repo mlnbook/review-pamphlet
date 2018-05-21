@@ -8,7 +8,6 @@
   * [设计](bigdata/she-ji.md)
   * [Hive](bigdata/hive.md)
   * [Hbase](bigdata/hbase.md)
-  * [Other](bigdata/other.md)
   * [Spark](bigdata/spark.md)
   * [Flink](bigdata/flink.md)
   * [Impala](bigdata/impala.md)
