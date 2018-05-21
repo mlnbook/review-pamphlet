@@ -12,7 +12,7 @@
   * [Spark](bigdata/spark.md)
   * [Flink](bigdata/flink.md)
   * [Impala](bigdata/impala.md)
-  * Kudu
+  * [Kudu](bigdata/kudu.md)
 * [Java](java.md)
   * [JVM](java/jvm.md)
 * [运维](yun-wei.md)
