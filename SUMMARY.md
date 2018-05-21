@@ -10,7 +10,7 @@
   * [Hbase](bigdata/hbase.md)
   * [Other](bigdata/other.md)
   * [Spark](bigdata/spark.md)
-  * Flink
+  * [Flink](bigdata/flink.md)
   * Impala
 * [Java](java.md)
   * [JVM](java/jvm.md)
