@@ -12,6 +12,7 @@
   * [Flink](bigdata/flink.md)
   * [Impala](bigdata/impala.md)
   * [Kudu](bigdata/kudu.md)
+  * [解决方案](bigdata/解决方案.md)
 * [Java](java.md)
   * [JVM](java/jvm.md)
 * [运维](yun-wei.md)
