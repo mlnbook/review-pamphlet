@@ -75,7 +75,41 @@
 
 ### 1.7 如何减少Hadoop Map端到Reduce端的数据传输量？
 
-### 1.8 hadoop常见的join操作？
+### 1.8 hadoop常见的链接join操作？
+
+![内连接和外连接](http://static.lovedata.net/jpg/2018/5/24/8f84a6747faa534c0b03a90b356cd383.jpg)
+
+为了实现内连接和外连接，MapReduce中有三种连接策略，如下所示。这三种连接策略有的在map阶段，有的在reduce阶段。它们都针对MapReduce的排序-合并（sort-merge）的架构进行了优化。
+
+- 重分区连接（Repartition join）—— reduce端连接。使用场景：连接两个或多个大型数据集。
+- 复制连接（Replication join）—— map端连接。使用场景：待连接的数据集中有一个数据集足够小到可以完全放在缓存中。
+- 半连接（Semi-join）—— 另一个map端连接。使用场景：待连接的数据集中有一个数据集非常大，但同时这个数据集可以被过滤成小到可以放在缓存中。
+
+1. Reduce side join
+    ![image](http://static.lovedata.net/jpg/2018/5/22/9659eb7d2f3b0b34f51f7bcfabff4d7a.jpg)
+
+    1. **Map阶段**
+    读取源表的数据，Map输出时候以Join on条件中的列为key，如果Join有多个关联键，则以这些关联键的组合作为key；Map输出的value为join之后所关心的(select或者where中需要用到的)列，同时在value中还会包含表的Tag信息，用于标明此value对应哪个表。
+    2. **Shuffle阶** 
+    根据key的值进行hash，并将key/value按照hash值推送至不同的reduce中，这样确保两个表中相同的key位于同一个reduce中。
+    3. **Reduce阶段**
+      根据key的值完成join操作，期间通过Tag来识别不同表中的数据。
+
+2. Map Side join
+  ![image](http://static.lovedata.net/jpg/2018/5/22/8358ada057f8cbd0ba792d3841058bda.jpg)
+    - 没有reduce 直接输出结果
+    - 独立task 读取小表 放入 DistributeCache
+
+3. SemiJoin
+  半连接  SemiJoin，也叫半连接，是从分布式数据库中借鉴过来的方法。它的产生动机是：对于reduce side join，跨机器的数据传输量非常大，这成了join操作的一个瓶颈，如果能够在map端过滤掉不会参加join操作的数据，则可以大大节省网络IO。
+  实现方法很简单：选取一个小表，假设是File1，将其参与join的key抽取出来，保存到文件File3中，File3文件一般很小，可以放到内存中。在map阶段，使用DistributedCache将File3复制到各个TaskTracker上，然后将File2中不在File3中的key对应的记录过滤掉，剩下的reduce阶段的工作与reduce side join相同。
+
+  [大牛翻译系列Hadoop（3）MapReduce 连接：半连接（Semi-join）](https://www.cnblogs.com/datacloud/p/3579975.html)
+4.  reduce side join + BloomFilter
+   在某些情况下，SemiJoin抽取出来的小表的key集合在内存中仍然存放不下，这时候可以使用BloomFiler以节省空间。
+**BloomFilter** 最常见的作用是：判断某个元素是否在一个集合里面。它最重要的两个方法是：add() 和contains()。最大的特点是不会存在false negative，即：如果contains()返回false，则该元素一定不在集合中，但会存在一定的true negative，即：如果contains()返回true，则该元素可能在集合中。
+因而可将小表中的key保存到BloomFilter中，在map阶段过滤大表，可能有一些不在小表中的记录没有过滤掉（但是在小表中的记录一定不会过滤掉），这没关系，只不过增加了少量的网络IO而已。
+更多关于BloomFilter的介绍，可参考：http://blog.csdn.net/jiaomeng/article/details/1495500
 
 ## 2.HDFS
 
