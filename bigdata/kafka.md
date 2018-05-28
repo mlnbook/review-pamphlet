@@ -6,11 +6,16 @@
 
 ## 2. kafka 新版API auto.offset.reset 的含义
 
-earliest
+### 2.1 earliest
+
 当各分区下有已提交的offset时，从提交的offset开始消费；无提交的offset时，从头开始消费
-latest
+
+### 2.2 latest
+
 当各分区下有已提交的offset时，从提交的offset开始消费；无提交的offset时，消费新产生的该分区下的数据
-none
+
+### 2.3 none
+
 topic各分区都存在已提交的offset时，从offset后开始消费；只要有一个分区不存在已提交的offset，则抛出异常
 
 [Kafka auto.offset.reset值详解](https://blog.csdn.net/lishuangzhe7047/article/details/74530417)
