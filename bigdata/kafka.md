@@ -68,6 +68,24 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 ## 5. kafka 的leader 选举机制是怎样实现的以及各个版本的实现？
 
+1. leader是对应partition的概念，每个partition都有一个leader。
+2. 客户端生产消费消息都是只跟leader交互 (实现上简单。)
+3. ISR（In-Sync Replicas）直译就是跟上leader的副本
+4. ![image](http://static.lovedata.net/jpg/2018/5/29/8e14780235f97056c60785dce43f18e7.jpg)
+    1. High watermark（高水位线）以下简称HW，表示消息被leader和ISR内的follow都确认commit写入本地log，所以在HW位置以下的消息都可以被消费（不会丢失）
+    2. Log end offset（日志结束位置）以下简称LEO，表示消息的最后位置。LEO>=HW，一般会有没提交的部分。
+5. 副本会有单独的线程（ReplicaFetcherThread），去从leader上去拉去消息同步。当follower的HW赶上leader的，就会保持或加入到 **ISR** 列表里，就说明此follower满足上述最基本的原则（跟上leader进度）。ISR列表存在zookeeper上。
+    1. replica.lag.max.messages 落后的消息个数 （Kafka 0.10.0 移除了落后消息个数参数（replica.lag.max.messages），原因是这个值不好把控，需要经验值，不用的业务服务器环境，这个值可能不同，不然会频繁的移除加入ISR列表） [Kafka副本管理—— 为何去掉replica.lag.max.messages参数 - huxihx - 博客园](http://www.cnblogs.com/huxi2b/p/5903354.html)
+    2. replica.lag.time.max.ms 多长时间没有发送FetchQuest请求拉去leader数据
+6. producer的ack参数选择，取优先考虑可靠性，还是优先考虑高并发。以下不用的参数，会导致有可能丢消息。
+    - 0表示纯异步，不等待，写进socket buffer就继续。
+    - 1表示leader写进server的本地log，就返回，不等待follower的回应。
+    - -1相当于all，表示等待follower回应再继续发消息。保证了ISR列表里至少有一个replica，数据就不会丢失，最高的保证级别。
+7. 参考
+    1. [kafka的HA设计 - 简书](https://www.jianshu.com/p/83066b4df739)
+    2. [kafka的leader选举过程 - 简书](https://www.jianshu.com/p/c987b5e055b0)
+8. unclean.leader.election.enable 默认是true，表示允许不在ISR列表的follower，选举为leader（最坏的打算，可能丢消息）
+
 ## 6. kafka 的 rebalance 是怎样的？
 
 ## 7. kafka中的offset状态，以及high.watermark是什么意思
@@ -80,3 +98,26 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 该图还显示了日志中的另外两个重要位置。日志结束偏移量是写入日志的最后一条消息的偏移量。高水印是成功复制到所有日志副本的最后一条消息的偏移量。从消费者的角度来看，主要知道的是，你只能读取高水印。这防止消费者读取稍后可能丢失的未复制数据。
 
 ## 8. Kafak本身提供的新的组协调协议是怎样的机制？
+
+## 9. kafka 使用场景？
+
+- 日志收集：一个公司可以用Kafka可以收集各种服务的log，通过kafka以统一接口服务的方式开放给各种consumer，例如hadoop、Hbase、Solr等。
+- 消息系统：解耦和生产者和消费者、缓存消息等。
+- 用户活动跟踪：Kafka经常被用来记录web用户或者app用户的各种活动，如浏览网页、搜索、点击等活动，这些活动信息被各个服务器发布到kafka的topic中，然后订阅者通过订阅这些topic来做实时的监控分析，或者装载到hadoop、数据仓库中做离线分析和挖掘。
+- 运营指标：Kafka也经常用来记录运营监控数据。包括收集各种分布式应用的数据，生产各种操作的集中反馈，比如报警和报告。
+- 流式处理：比如spark streaming和storm
+- 事件源
+
+[Kafka史上最详细原理总结 | 静水流深](http://www.thinkyixia.com/2017/10/25/kafka-2/)
+
+## 10. partition和replica默认分配到哪个broker的策略?
+
+- 将所有N Broker和待分配的i个Partition排序.
+- 将第i个Partition分配到第(i mod n)个Broker上.
+- 将第i个Partition的第j个副本分配到第((i + j) mod n)个Broker上.
+
+## 11. kafka zookeeper中存储结构
+
+1. ![image](http://static.lovedata.net/jpg/2018/5/29/e579c3897235853981bb911ef3328e4e.jpg)
+2. ![image](http://static.lovedata.net/jpg/2018/5/29/58462246b8030bb67d3a633305cfe12b.jpg)
+3. ![image](http://static.lovedata.net/jpg/2018/5/29/dc69269178701fdeae11e3388340176e.jpg)

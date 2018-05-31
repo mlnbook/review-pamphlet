@@ -52,10 +52,22 @@
 
 [死磕Java并发：深入分析synchronized的实现原理](https://mp.weixin.qq.com/s/wHz0uL_LEe4OgLsSFGEZEg)
 
-## 7. HashMap的并发问题
+## 7. HashMap的原理和并发问题
+
+### 7.1 原理
+
+### 7.2 并发问题
 
 ## 8. 了解LinkedHashMap的应用吗
 
 ## 9. 线程池实现原理，Lock机制的实现
 
-## 1. ConcurrentHashMap深入分析
+## 10. ConcurrentHashMap深入分析
+
+### 10.1 concurrenthashmap怎么实习同步？各个版本的实现方案？
+
+## 11. callable runnable 区别；
+
+## 12. 进程线程区别；
+
+## 13. hashMap和treeMap的区别，以及实现；

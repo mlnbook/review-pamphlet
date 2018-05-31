@@ -109,7 +109,46 @@
    在某些情况下，SemiJoin抽取出来的小表的key集合在内存中仍然存放不下，这时候可以使用BloomFiler以节省空间。
 **BloomFilter** 最常见的作用是：判断某个元素是否在一个集合里面。它最重要的两个方法是：add() 和contains()。最大的特点是不会存在false negative，即：如果contains()返回false，则该元素一定不在集合中，但会存在一定的true negative，即：如果contains()返回true，则该元素可能在集合中。
 因而可将小表中的key保存到BloomFilter中，在map阶段过滤大表，可能有一些不在小表中的记录没有过滤掉（但是在小表中的记录一定不会过滤掉），这没关系，只不过增加了少量的网络IO而已。
-更多关于BloomFilter的介绍，可参考：http://blog.csdn.net/jiaomeng/article/details/1495500
+更多关于BloomFilter的介绍，可参考：[Bloom Filter概念和原理 - CSDN博客](http://blog.csdn.net/jiaomeng/article/details/1495500)
+
+### 1.9 简答说一下hadoop的map-reduce编程模型
+
+1. map task会从本地文件系统读取数据，转换成key-value形式的键值对集
+2. 使用的是hadoop内置的数据类型，比如longwritable、text等
+3. 将键值对集合输入mapper进行业务处理过程，将其转换成需要的key-value在输出
+4. 之后会进行一个partition分区操作，默认使用的是hashpartitioner，可以通过重写hashpartitioner的getpartition方法来自定义分区规则
+5. 之后会对key进行进行sort排序，grouping分组操作将相同key的value合并分组输出，在这里可以使用自定义的数据类型，重写WritableComparator的Comparator方法来自定义排序规则，重写RawComparator的compara方法来自定义分组规则
+6. 之后进行一个combiner归约操作，其实就是一个本地段的reduce预处理，以减小后面shufle和reducer的工作量
+7. reduce task会通过网络将各个数据收集进行reduce处理，最后将数据保存或者显示，结束整个job
+
+### 1.10 hadoop的TextInputFormat作用是什么，如何自定义实现
+
+InputFormat会在map操作之前对数据进行两方面的预处理
+
+1. 是 **getSplits** ，返回的是InputSplit数组，对数据进行split分片，每片交给map操作一次
+2. 是getRecordReader，返回的是RecordReader对象，对每个split分片进行转换为key-value键值对格式传递给map
+
+常用的InputFormat是TextInputFormat，使用的是LineRecordReader对每个分片进行键值对的转换，以行偏移量作为键，行内容作为值
+自定义类继承InputFormat接口，重写createRecordReader和isSplitable方法
+在createRecordReader中可以自定义分隔符
+
+### 1.11 hadoop和spark的都是并行计算，那么他们有什么相同和区别
+
+1. 相同点
+   1. 都是用mr模型来进行并行计算 
+2. 不同点
+   1. hadoop的一个作业称为job，job里面分为map task和reduce task，每个task都是在自己的进程中运行的，当task结束时，进程也会结束
+   2. spark用户提交的任务成为application，一个application对应一个sparkcontext，app中存在多个job，每触发一次action操作就会产生一个job,每个job中有多个stage，stage是shuffle过程中DAGSchaduler通过RDD之间的依赖关系划分job而来的，每个stage里面有多个task，组成taskset有TaskSchaduler分发到各个executor中执行
+   3. **hadoop的job只有map和reduce操作，表达能力比较欠缺而且在mr过程中会重复的读写hdfs，造成大量的io操作，多个job需要自己管理关系**
+   4. **spark的迭代计算都是在内存中进行的，API中提供了大量的RDD操作如join，groupby等，而且通过DAG图可以实现良好的容错**
+
+### 1.12 map-reduce程序运行的时候会有什么比较常见的问题
+
+比如说作业中大部分都完成了，但是总有几个reduce一直在运行
+这是因为这几个reduce中的处理的数据要远远大于其他的reduce，可能是因为对键值对任务划分的不均匀造成的数据倾斜
+解决的方法可以在分区的时候重新定义分区规则对于value数据很多的key可以进行拆分、均匀打散等处理，或者是在map端的combiner中进行数据预处理的操作
+
+### 1.13 WritableComparator 如何使用
 
 ## 2.HDFS
 
@@ -123,17 +162,21 @@
 
 ### 2.5 HDFS和HBase各自使用场景
 
+### 2.6 Hadoop namenode的ha，主备切换实现原理，日志同步原理，QJM中用到的分布式一致性算法（就是paxos算法）
+
 ## 3.YARN
 
 ### 3.1 YARN的新特性
 
 ### 3.2 hadoop的调度策略的实现，你们使用的是那种策略，为什么？
 
+### 3.3 画一个yarn架构图，及其通信流程；
+
 ## 4.其他
 
 ### 4.1 简单概述hadoop中的角色的分配以及功能
 
-### 4.2 hadoop的优化
+### 4.2 hadoop的优化（性能调优）
 
 ### 4.3 hadoop1与hadoop2的区别
 
