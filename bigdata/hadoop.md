@@ -109,19 +109,152 @@
    在某些情况下，SemiJoin抽取出来的小表的key集合在内存中仍然存放不下，这时候可以使用BloomFiler以节省空间。
 **BloomFilter** 最常见的作用是：判断某个元素是否在一个集合里面。它最重要的两个方法是：add() 和contains()。最大的特点是不会存在false negative，即：如果contains()返回false，则该元素一定不在集合中，但会存在一定的true negative，即：如果contains()返回true，则该元素可能在集合中。
 因而可将小表中的key保存到BloomFilter中，在map阶段过滤大表，可能有一些不在小表中的记录没有过滤掉（但是在小表中的记录一定不会过滤掉），这没关系，只不过增加了少量的网络IO而已。
-更多关于BloomFilter的介绍，可参考：http://blog.csdn.net/jiaomeng/article/details/1495500
+更多关于BloomFilter的介绍，可参考：[Bloom Filter概念和原理 - CSDN博客](http://blog.csdn.net/jiaomeng/article/details/1495500)
+
+### 1.9 简答说一下hadoop的map-reduce编程模型
+
+1. map task会从本地文件系统读取数据，转换成key-value形式的键值对集
+2. 使用的是hadoop内置的数据类型，比如longwritable、text等
+3. 将键值对集合输入mapper进行业务处理过程，将其转换成需要的key-value在输出
+4. 之后会进行一个partition分区操作，默认使用的是hashpartitioner，可以通过重写hashpartitioner的getpartition方法来自定义分区规则
+5. 之后会对key进行进行sort排序，grouping分组操作将相同key的value合并分组输出，在这里可以使用自定义的数据类型，重写WritableComparator的Comparator方法来自定义排序规则，重写RawComparator的compara方法来自定义分组规则
+6. 之后进行一个combiner归约操作，其实就是一个本地段的reduce预处理，以减小后面shufle和reducer的工作量
+7. reduce task会通过网络将各个数据收集进行reduce处理，最后将数据保存或者显示，结束整个job
+
+### 1.10 hadoop的TextInputFormat作用是什么，如何自定义实现
+
+InputFormat会在map操作之前对数据进行两方面的预处理
+
+1. 是 **getSplits** ，返回的是InputSplit数组，对数据进行split分片，每片交给map操作一次
+2. 是getRecordReader，返回的是RecordReader对象，对每个split分片进行转换为key-value键值对格式传递给map
+
+常用的InputFormat是TextInputFormat，使用的是LineRecordReader对每个分片进行键值对的转换，以行偏移量作为键，行内容作为值
+自定义类继承InputFormat接口，重写createRecordReader和isSplitable方法
+在createRecordReader中可以自定义分隔符
+
+### 1.11 hadoop和spark的都是并行计算，那么他们有什么相同和区别
+
+1. 相同点
+   1. 都是用mr模型来进行并行计算 
+2. 不同点
+   1. hadoop的一个作业称为job，job里面分为map task和reduce task，每个task都是在自己的进程中运行的，当task结束时，进程也会结束
+   2. spark用户提交的任务成为application，一个application对应一个sparkcontext，app中存在多个job，每触发一次action操作就会产生一个job,每个job中有多个stage，stage是shuffle过程中DAGSchaduler通过RDD之间的依赖关系划分job而来的，每个stage里面有多个task，组成taskset有TaskSchaduler分发到各个executor中执行
+   3. **hadoop的job只有map和reduce操作，表达能力比较欠缺而且在mr过程中会重复的读写hdfs，造成大量的io操作，多个job需要自己管理关系**
+   4. **spark的迭代计算都是在内存中进行的，API中提供了大量的RDD操作如join，groupby等，而且通过DAG图可以实现良好的容错**
+
+### 1.12 map-reduce程序运行的时候会有什么比较常见的问题
+
+比如说作业中大部分都完成了，但是总有几个reduce一直在运行
+这是因为这几个reduce中的处理的数据要远远大于其他的reduce，可能是因为对键值对任务划分的不均匀造成的数据倾斜
+解决的方法可以在分区的时候重新定义分区规则对于value数据很多的key可以进行拆分、均匀打散等处理，或者是在map端的combiner中进行数据预处理的操作
+
+### 1.13 WritableComparator 如何使用
 
 ## 2.HDFS
 
 ### 2.1 hdfs 的数据压缩算法
 
-### 2.2 文件大小默认为 64M，改为 128M 有啥影响
+### 2.2 ~~文件大小默认为 64M，改为 128M 有啥影响~~ bloack大小为什么增大默认为128M
+
+1. 减轻了namenode的压力
+  原因是hadoop集群在启动的时候，datanode会上报自己的block的信息给namenode。namenode把这些信息放到内存中。那么如果块变大了，那么namenode的记录的信息相对减少，所以namenode就有更多的内存去做的别的事情，使得整个集群的性能增强。
+2. 增大会不会带来负面相应。
+  因为这个可以灵活设置，所以这里不是问题。关键是什么时候，该如何设置。
+  如果对于数两级别为PB的话，建议可以block设置的大一些。
+  如果数据量相对较少，可以设置的小一些64M也未尝不可。
+3. 参考
+   1. [Hadoop-2.X中HDFS文件块bloack大小为什么增大默认为128M-Hadoop|YARN-about云开发-活到老 学到老](http://www.aboutyun.com/thread-7514-1-1.html)
 
 ### 2.3 讲述HDFS上传文件和读文件的流程？
 
-### 2.4 HDFS在上传文件的时候，如果其中一个块突然损坏了怎么办？
+### 2.3.1 读数据流程
+
+![image](http://static.lovedata.net/jpg/2018/5/31/459e0d017d85b47b3e1380b1985d2225.jpg)
+
+1. 客户端(Client)调用FileSystem的open()函数打开文件。
+2. DistributeFileSystem通过RPC调用元数据节点，得到文件的数据块信息。 **对于每一个数据块，元数据节点返回数据块的数据节点位置。**
+3. DistributedFileSystem返回FSDataInputStream给客户端，用来读取数据。客户端调用stream的read()方法读取数据。
+4. FSDataInputStream连接保存此文件第一个数据块的 **最近的数据节点** ，Data从数据节点读到客户端(Client)。
+5. 当此数据块读取完毕后，FSDataInputStream关闭和此数据节点的连接，然后读取保存下一个数据块的最近的数据节点。
+6. 当数据读取完毕后，调用FSDataInputStream的close()函数。
+7. 在数据读取过程中，如果客户端在与数据节点通信时出现错误， **则会尝试读取包含有此数据块的下一个数据节点** ，并且失败的数据节点会被记录，以后不会再连接
+
+### 2.3.2 写数据流程
+
+![image](http://static.lovedata.net/jpg/2018/5/31/3d11422458fe21f376f2f478a7bf1073.jpg)
+
+1. 客户端调用create()函数创建文件。
+2. DistributedFileSystem通过RPC调用 **元数据节点** ，在文件系统的 **命名空间** 中创建一个新的文件。元数据节点会首先确定文件原先不存在，并且客户端有创建文件的权限，然后创建新文件。
+3. DistributedFileSystem返回FSDataOutputStream，客户端用于写数据。
+4. **FSDataOutputStream将数据分成块** ，写入Data Queue。Data Queue由Data Streamer读取，并通知元数据节点分配数据节点用来存储数据块(每块默认复制3份)。分配的数据节点放在一个Pipeline中。Data Streamer将数据块写入Pipeline中的第一个数据节点；第一个数据节点再将数据块发送给第二个数据节点；第二个数据节点再将数据发送给第三个数据节点。
+5. FSDataoutputStream为发出去的数据块保存了 ACK Queue ,等待Pipeline中的数据节点告知数据已成功写入。如果数据节点在写入过程中失败了，则关闭Pipeline，将Ack Queue中的数据块放入到Data Queue的开始。
+6. 当前数据块在已经写入的数据节点中会被元数据节点赋予新的标识，则错误节点重启后能察觉到其数据块是过时的，将会被删除。失败的数据节点从Pipeline中移除，另外的数据块则写入Pipeline中的另外两个数据节点。元数据节点则被通知此数据块复制块数不足，将来会再创建第三份备份。
+7. 当客户端结束写入数据后，则调用stream的close()方法。此操作将所有的数据块写入pipeline中的数据节点，并等待ACK Queue成功返回。最后通知元数据节点写入完毕。
+
+参考
+
+1. [HDFS文件读取、写入过程详解 - CSDN博客](https://blog.csdn.net/xu__cg/article/details/68106221)
+
+### 2.4 HDFS在上传文件的时候，如果其中一个块突然损坏了怎么办？（读取文件的异常处理）
+
+[HDFS 异常处理与恢复 - mindwind - 博客园](https://www.cnblogs.com/mindwind/p/4833098.html)
 
 ### 2.5 HDFS和HBase各自使用场景
+
+HBase作为面向列的数据库运行在HDFS之上，HDFS缺乏随即读写操作，HBase正是为此而出现,以键值对的形式存储。项目的目标就是快速在主机内数十亿行数据中定位所需的数据并访问它。
+HBase是一个数据库，一个NoSql的数据库，像其他数据库一样提供随即读写功能，Hadoop不能满足实时需要，HBase正可以满足。如果你需要实时访问一些数据，就把它存入HBase
+
+#### 什么场景下应用Hbase
+
+1. 成熟的数据分析主题，查询模式已经确立，并且不会轻易改变。
+2. 传统的关系型数据库已经无法承受负荷，高速插入，大量读取。
+3. 适合海量的，但同时也是简单的操作(例如：key-value)。
+4. **半结构化或非结构化数据**  对于数据结构字段不够确定或杂乱无章很难按一个概念去进行抽取的数据适合用HBase。以上面的例子为例，当业务发展需要存储author的email，phone，address信息时RDBMS需要停机维护，而HBase支持动态增加.
+5. 记录非常稀疏  RDBMS的行有多少列是固定的，为null的列浪费了存储空间。而如上文提到的，HBase为null的Column不会被存储，这样既节省了空间又提高了读性能。
+6. 多版本数据 如上文提到的根据Row key和Column key定位到的Value可以有任意数量的版本值，因此对于需要存储变动历史记录的数据，用HBase就非常方便了。比如上例中的author的Address是会变动的，业务上一般只需要最新的值，但有时可能需要查询到历史值。
+7. 超大数据量 当数据量越来越大，RDBMS数据库撑不住了，就出现了读写分离策略，通过一个Master专门负责写操作，多个Slave负责读操作，服务器成本倍增。随着压力增加，Master撑不住了，这时就要分库了，把关联不大的数据分开部署，一些join查询不能用了，需要借助中间层。随着数据量的进一步增加，一个表的记录越来越大，查询就变得很慢，于是又得搞分表，比如按ID取模分成多个表以减少单个表的记录数。经历过这些事的人都知道过程是多么的折腾。采用HBase就简单了，只需要加机器即可，HBase会自动水平切分扩展，跟Hadoop的无缝集成保障了其数据可靠性（HDFS）和海量数据分析的高性能（MapReduce）。
+
+#### hadoop主要应用于数据量大的离线场景。特征为：
+
+1. 数据量大。一般真正线上用Hadoop的，集群规模都在上百台到几千台的机器。这种情况下，T级别的数据也是很小的。Coursera上一门课了有句话觉得很不错：Don't use hadoop, your data isn't that big
+2. 离线。Mapreduce框架下，很难处理实时计算，作业都以日志分析这样的线下作业为主。另外，集群中一般都会有大量作业等待被调度，保证资源充分利用。
+3. 数据块大。由于HDFS设计的特点，Hadoop适合处理文件块大的文件。大量的小文件使用Hadoop来处理效率会很低。举个例子，百度每天都会有用户对侧边栏广告进行点击。这些点击都会被记入日志。然后在离线场景下，将大量的日志使用Hadoop进行处理，分析用户习惯等信息。
+
+#### Hbase 八大场景
+
+- 对象存储：我们知道不少的头条类、新闻类的的新闻、网页、图片存储在HBase之中，一些病毒公司的病毒库也是存储在HBase之中
+- 时序数据：HBase之上有OpenTSDB模块，可以满足时序类场景的需求
+- 推荐画像：特别是用户的画像，是一个比较大的稀疏矩阵，蚂蚁的风控就是构建在HBase之上
+- 时空数据：主要是轨迹、气象网格之类，滴滴打车的轨迹数据主要存在HBase之中，另外在技术所有大一点的数据量的车联网企业，数据都是存在HBase之中
+- CubeDB OLAP：Kylin一个cube分析工具，底层的数据就是存储在HBase之中，不少客户自己基于离线计算构建cube存储在hbase之中，满足在线报表查询的需求
+- 消息/订单：在电信领域、银行领域，不少的订单查询底层的存储，另外不少通信、消息同步的应用构建在HBase之上
+- Feeds流：典型的应用就是xx朋友圈类似的应用
+- NewSQL：之上有Phoenix的插件，可以满足二级索引、SQL的需求，对接传统数据需要SQL非事务的需求
+
+#### 不适用于HDFS的场景：
+
+1) 低延迟
+HDFS不适用于实时查询这种对延迟要求高的场景，例如：股票实盘。往往应对低延迟数据访问场景需要通过数据库访问索引的方案来解决，Hadoop生态圈中的Hbase具有这种随机读、低延迟等特点。
+
+2) 大量小文件
+对于Hadoop系统，小文件通常定义为远小于HDFS的block size（默认64MB）的文件，由于每个文件都会产生各自的MetaData元数据，Hadoop通过Namenode来存储这些信息，若小文件过多，容易导致Namenode存储出现瓶颈。
+
+3) 多用户更新
+为了保证并发性，HDFS需要一次写入多次读取，目前不支持多用户写入，若要修改，也是通过追加的方式添加到文件的末尾处，出现太多文件需要更新的情况，Hadoop是不支持的。
+针对有多人写入数据的场景，可以考虑采用Hbase的方案。
+
+4) 结构化数据
+HDFS适合存储半结构化和非结构化数据，若有严格的结构化数据存储场景，也可以考虑采用Hbase的方案。
+
+5) 数据量并不大
+
+参考
+
+1. [区分 hdfs hbase hive hbase适用场景 - 李玉龙 - 博客园](https://www.cnblogs.com/liyulong1982/p/6001822.html)
+2. [（第3篇）HDFS是什么？HDFS适合做什么？我们应该怎样操作HDFS系统？ - 何石-博客 - 博客园](https://www.cnblogs.com/shijiaoyun/p/6761637.html)
+3. [hbase常识及habse适合什么场景 - 天下尽好 - 博客园](https://www.cnblogs.com/Little-Li/p/7878219.html)
+
+### 2.6 Hadoop namenode的ha，主备切换实现原理，日志同步原理，QJM中用到的分布式一致性算法（就是paxos算法）
 
 ## 3.YARN
 
@@ -129,11 +262,13 @@
 
 ### 3.2 hadoop的调度策略的实现，你们使用的是那种策略，为什么？
 
+### 3.3 画一个yarn架构图，及其通信流程；
+
 ## 4.其他
 
 ### 4.1 简单概述hadoop中的角色的分配以及功能
 
-### 4.2 hadoop的优化
+### 4.2 hadoop的优化（性能调优）
 
 ### 4.3 hadoop1与hadoop2的区别
 
