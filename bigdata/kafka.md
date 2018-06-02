@@ -4,7 +4,7 @@
 
 [Kafka 0.9 新消费者API](https://www.cnblogs.com/admln/p/5446361.html)
 
-## 2. kafka 新版API auto.offset.reset 的含义
+## 2. kafka 新版API auto.offset.reset 的含义 
 
 ### 2.1 earliest
 
@@ -99,9 +99,6 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 
 ## 8. Kafak本身提供的新的组协调协议是怎样的机制？
 
-<<<<<<< HEAD
-## 9. 如果Zookeeper宕机了，kafka还能用吗？
-=======
 ## 9. kafka 使用场景？
 
 - 日志收集：一个公司可以用Kafka可以收集各种服务的log，通过kafka以统一接口服务的方式开放给各种consumer，例如hadoop、Hbase、Solr等。
@@ -124,4 +121,94 @@ topic各分区都存在已提交的offset时，从offset后开始消费；只要
 1. ![image](http://static.lovedata.net/jpg/2018/5/29/e579c3897235853981bb911ef3328e4e.jpg)
 2. ![image](http://static.lovedata.net/jpg/2018/5/29/58462246b8030bb67d3a633305cfe12b.jpg)
 3. ![image](http://static.lovedata.net/jpg/2018/5/29/dc69269178701fdeae11e3388340176e.jpg)
->>>>>>> 570551cd93adacfc79159308d80c19dc43d804af
+
+## 12. 如果Zookeeper宕机了，kafka还能用吗？
+
+## 13. kafka 发送消息的三种方式
+
+>调用send()方法发送ProducerRecored对象， send()方法返回一个包含RecordMetadata的Future对象
+
+1. 发送并忘记  直接send消息
+2. 同步发送，调用send() 返回一个Futrue对象，调用get()方法进行等待，可能抛出异常，有可重试异常和不可重试异常（如数据太大）
+3. 异步发送，调用send()方法，指定一个回调函数，服务器返回相应的时候调用该函数 (实现producer.Callback的onComplete方法)
+
+## 14. kafka生产者有哪些重要的配置？
+
+### 14.1 acks
+
+acks 指定了必须要多少个分区副本收到消息，生产者才会认为消息写入是成功的。
+
+1. acks=0 不会等待任何来自服务器的响应，可能会丢消息，但是又更大的吞吐量
+2. acks=1 只要首领leader收到消息，就会收到成功响应（如果leader节点异常了，一个没有收到消息的节点成为新leader，还是会丢失）
+3. acks=all 只有参与复制的节点全部收到消息，才会收到成功响应  延迟较高
+
+### 14.2 buffer.memory
+
+生产者内存缓冲区大小
+
+### 14.3  compression.type
+
+压缩方式 snapy gzip lz4
+
+### 14.4 retries
+
+重试次数
+
+### 14.5 client.id
+
+任意字符串，识别消息来源 用于日志和配额指标
+
+### 14.6 max.block.ms
+
+如果缓冲区已满之后send阻塞的时间，如果达到后抛异常
+
+### 14.7 max.in.flight.requests.per.connection
+
+指定生产者收到服务响应之前可以发送多少消息，值越大，内存占用越大，吞吐量越高，设置为1保证消息有序发送写入
+
+## 15. kafka消息的顺序性保证是怎样的
+
+>银行存款取款场景下，顺序很重要
+
+1. 可以保证一个分区的消息是有序的
+2. 如果retries为非零， max.in.flight.requests.per.connection>1,如果一个消息社保，第二批次成功，第一次重试成功后，那么顺序就乱了
+3. 一般设置retries>0,把max.in.flight.requests.per.connection设置为1，保证有序
+
+## 16.什么是Avro？
+
+1. Avro 是一种与语言无关的序列化格式，通过schema定义，schema使用json描述，数据被序列为二进制或者json（一般二进制），schema内嵌在数据文件里， **兼容新旧版本**
+2. 使用schema注册表来生产者注册schema，消费者获取schema，使用Confluent Schema Registry注册表
+
+## 17. kafka主题增加分区后，原来的路由到分区A的数据，还会路由到A吗？
+
+不会，回路由到其他分区，要想不变，就是在创建主题的时候，把分区规划好，而且永远不要增加新分区
+
+## 18. kafka分区的方式
+
+1. 键值为null，并且使用默认分区，分区器使用轮训（Round Robin）均衡分布到各个分区上
+2. 兼职不是null，并且使用默认分区，使用kafka对键进行散列（这里散列使用所有分区，包括不可用的，可能会发生错误）
+3. 自定义分区
+
+## 19. 什么时候发生重新分配reblance？
+
+在主题发生变化时，比如管理员添加了新的分区，会发生。
+分区所有权从一个消费者转移到另一个消费者，这样的行为成为再均衡，给消费者群组带来了高可用性和伸缩性
+弊端： 消费者群组一段时间不能读取消息。
+消费者向群组协调器broker发送心跳维持所有权关系，在轮询消息和提交偏移量的时候发送心跳。
+消费者必须持续的轮询向kafka请求数据，否则会被认为已经死掉，导致重新分配哦。
+
+## 20. KafkaConsumer在订阅数据后退出了不关闭会有什么后果？
+
+如果不管，网络连接和socket也不会关闭，就不能立即出发再均衡，要等待协调器发现心跳没了才确认他死亡了，这样就需要更长的时间，导致群组在一段时间内无法读取消息
+
+## 21. 消费者线程安全问题？
+
+同一个群组，无法让一个线程运行多个消费者，也无法让多个线程安全的共享一个消费者，按照规则，一个消费者使用一个线程。如果要多线程使用ExecutorServcie启动多个线程，让每个线程运行自己的消费者。
+
+## 22.消费者的重要配置？
+
+1. fetch.min.bytes 从服务器获取的最小字节数，如果数据不够，不会马上返回。针对于数据量不大的情况下，避免频繁的网络连接
+2. fetch.max.wait.ms 等待broker数据的超时时间，与上面配置配套。不能老等是吧
+3. max.parition.fetch.bytes 服务器从每个分区返回给消费者最大字节数  默认值1MB,要比max.message.size大，否则消费者就无法读取了，如果太大也不行，可能消费者线程一下处理不完，导致以为自己挂掉了，要么就要该打session超时时间了
+4. session.timeout.ms 指定消费者被认为死亡之前可以与服务器断开连接的时间，hearbeat.interval.ms指定pool想协调器发送心跳的频率，一般比timeout.ms小，一般为他的三分之一
+5. [enableautocommit-的含义](#3-kafka-enableautocommit-的含义)
