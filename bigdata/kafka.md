@@ -1,10 +1,14 @@
 # Kafka
 
+## 0.kafka的概念相关的问题？
+
+1. kafka是一个分布式的、可分区的、可复制的提交日志服务，复制是核心，保证了了可用性和持久性
+
 ## 1. kafka 新旧API的特点？
 
 [Kafka 0.9 新消费者API](https://www.cnblogs.com/admln/p/5446361.html)
 
-## 2. kafka 新版API auto.offset.reset 的含义 
+## 2. kafka 新版API auto.offset.reset 的含义
 
 ### 2.1 earliest
 
@@ -212,3 +216,36 @@ acks 指定了必须要多少个分区副本收到消息，生产者才会认为
 3. max.parition.fetch.bytes 服务器从每个分区返回给消费者最大字节数  默认值1MB,要比max.message.size大，否则消费者就无法读取了，如果太大也不行，可能消费者线程一下处理不完，导致以为自己挂掉了，要么就要该打session超时时间了
 4. session.timeout.ms 指定消费者被认为死亡之前可以与服务器断开连接的时间，hearbeat.interval.ms指定pool想协调器发送心跳的频率，一般比timeout.ms小，一般为他的三分之一
 5. [enableautocommit-的含义](#3-kafka-enableautocommit-的含义)
+
+## 23. 消费者偏移量自动提交的方式？
+
+1. 自动提交 设置 anable.auto.commit=true,每 auto.commit.interval.ms 控制提交偏移量，默认5s，也是轮询里进行，每次轮询判断是否该提交了，无法完全避免消息被重复处理， **因为他并不能知道哪一条消息被处理掉了**
+2. 手动提交偏移量  anable.auto.commit=false 使用commitSync()提交（提交poll最新的偏移量） 需要确保处理完成消息后调用该方法
+    1. 缺点：阻塞应用程序
+3. 异步提交 commitAsync() 失败后不会重试，因为有可能有其他更大的偏移量已经提交了 支持一个回调，记录。
+    1. 可以使用一个单调递增序列号维护异步提交的顺序，失败后判断是否相等， 相等则可以重试
+4. 同步和异步组合提交 在正常的时候使用异步提交，在最后异步使用同步提交
+5. 提交特定偏移量，commitAync(map(topicparition,offsetandmetada)) 指定的偏移量
+6. **使用ConsumerReblanceListener来锦亭 分区再分配时间 有 revoke和assign方法实现**
+
+## 24. kafka如何退出
+
+在ShutdownHook调用 consumer.wakeup（）方法，该方法在调用后，consumer调用poll的时候会抛出WakeupException
+
+## 25.新版API如何消费指定的分区
+
+使用partitionsFor("topic") 获取某个主题所有的分区，并且从土偶哦 consumer.assin(topicparitions) 分配分区，不能获取新的分区通知。
+
+## 26.kafka高可用如何保证数据不丢失不重复消费？
+
+[Spark Streaming和Kafka整合保证数据零丢失 - FelixZh - 博客园](https://www.cnblogs.com/felixzh/p/6371253.html)
+
+## 27. kafka控制器的选举方式？
+
+1. kafka通过zk的临时节点选举控制器，在节点加入集群或者退出通知控制器，控制器负责加入或者离开集群式进行分区的首领选举，使用 epoch避免脑裂（两个节点都认为自己是当前的控制器：通过controller epoch 的新旧来判断）
+
+## 28. kafka broker 如何把消息发送给客户端
+
+1. 客户端请求首先罗到分区首领上
+2. 首领接到请求后首先判断请求是否有效：指定偏移是否存在  否则返回一个错误
+3. kafka使用  **零复制** 技术，直接从文件（linux文件缓冲区） 里发送到网络，不是使用缓冲区，避免了字节复制，也不需要内存缓冲区
