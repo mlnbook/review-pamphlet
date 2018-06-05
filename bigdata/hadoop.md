@@ -73,6 +73,22 @@
 
 ### 1.6 hadoop的二次排序
 
+1. Hadoop MapReduce 二次排序原理及其应用
+    在0.20.0以前使用的是
+        setPartitionerClass
+        setOutputkeyComparatorClass
+        setOutputValueGroupingComparator
+    在0.20.0以后使用是
+        job.setPartitionerClass(Partitioner p);
+        **job.setSortComparatorClass(RawComparator** c);
+        **job.setGroupingComparatorClass(RawComparator** c);
+        setGroupingComparatorClass - **就是通过一个comparator比较两个值是否返回0，如果是0，则就表示是一个组中的。**  然后开始构造一个key对应的value迭代器。这时就要用到分组，使用jobjob.setGroupingComparatorClass设置的分组函数类。只要这个比较器比较的两个key相同，他们就属于同一个组，它们的value放在一个value迭代器，而这个迭代器的key使用属于同一个组的所有key的第一个key   **如果不用分组，那么同一组的记录就要在多次reduce方法中独立处理，那么有些状态数据就要传递了，就会增加复杂度，在一次调用中处理的话，这些状态只要用方法内的变量就可以的。比如查找最大值，只要读第一个值就可以了。**
+        ![image](http://static.lovedata.net/jpg/2018/6/5/77cdfa80aa37a7f44712c93d0fed25f1.jpg)
+2. 参考
+    1. [[转]Hadoop MapReduce 二次排序原理及其应用 | 四号程序员](https://www.coder4.com/archives/4248)
+    2. [Hadoop SecondrySort 中有了sort为什么要使用setGroupingComparatorClass排序的解释](http://www.360doc.com/content/15/0428/21/23016082_466665862.shtml)
+    3. [bigdata-practice/SortMapReduce.java at master · pengshuangbao/bigdata-practice · GitHub](https://github.com/pengshuangbao/bigdata-practice/blob/master/src/main/java/com/lovedata/bigdata/hadoop/sort/secondary/SortMapReduce.java)
+
 ### 1.7 如何减少Hadoop Map端到Reduce端的数据传输量？
 
 ### 1.8 hadoop常见的链接join操作？
