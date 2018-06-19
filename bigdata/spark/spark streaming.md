@@ -203,3 +203,12 @@
 
 1. ![image](http://static.lovedata.net/jpg/2018/6/14/f922757b3191a274fd1d7a0e6a9e6868.jpg)
 2. ![image](http://static.lovedata.net/jpg/2018/6/14/98d3fc9cb3c2a8acf556428ac2a8ace2.jpg)
+
+
+### 2.11 常用名词介绍
+
+1. Dstream
+    1. ![image](http://static.lovedata.net/jpg/2018/6/15/2b403056ff561e785fda3803acb7a8d0.jpg)
+    2. ![image](http://static.lovedata.net/jpg/2018/6/15/f4986920bb874a1e97681025b19f8133.jpg)
+    3. ![image](http://static.lovedata.net/jpg/2018/6/15/3d0a26d27d1edbc997f753f04640ac27.jpg)
+    4. ![image](http://static.lovedata.net/jpg/2018/6/15/3136b9d092d4fbaaba9ded7fffde1943.jpg)
