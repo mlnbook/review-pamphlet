@@ -204,7 +204,6 @@
 1. ![image](http://static.lovedata.net/jpg/2018/6/14/f922757b3191a274fd1d7a0e6a9e6868.jpg)
 2. ![image](http://static.lovedata.net/jpg/2018/6/14/98d3fc9cb3c2a8acf556428ac2a8ace2.jpg)
 
-
 ### 2.11 常用名词介绍
 
 1. Dstream
@@ -212,3 +211,9 @@
     2. ![image](http://static.lovedata.net/jpg/2018/6/15/f4986920bb874a1e97681025b19f8133.jpg)
     3. ![image](http://static.lovedata.net/jpg/2018/6/15/3d0a26d27d1edbc997f753f04640ac27.jpg)
     4. ![image](http://static.lovedata.net/jpg/2018/6/15/3136b9d092d4fbaaba9ded7fffde1943.jpg)
+
+### 2.12 SS与Storm的对比
+
+![image](http://static.lovedata.net/jpg/2018/6/19/d25e02bd208bec1aab06ccaeb47027f4.jpg)
+![image](http://static.lovedata.net/jpg/2018/6/19/edfed7795fb19be856de49e138064267.jpg)
+![image](http://static.lovedata.net/jpg/2018/6/19/179518a440011f913564852609cbf3e0.jpg)
