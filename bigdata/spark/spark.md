@@ -33,9 +33,17 @@
 
 ### 1.8.Spark的三种提交模式是什么
 
+- local(本地模式)：常用于本地开发测试，本地还分为local单线程和local-cluster多线程;
+- standalone(集群模式)：典型的Mater/slave模式，不过也能看出Master是有单点故障的；Spark支持ZooKeeper来实现 HA
+- on yarn(集群模式)： 运行在 yarn 资源管理器框架之上，由 yarn 负责资源管理，Spark 负责任务调度和计算
+- on mesos(集群模式)： 运行在 mesos 资源管理器框架之上，由 mesos 负责资源管理，Spark 负责任务调度和计算
+- on cloud(集群模式)：比如 AWS 的 EC2，使用这个模式能很方便的访问 Amazon的 S3;Spark 支持多种分布式存储系统：HDFS 和 S3
+
 ### 1.9.spark 实现高可用性：High Availability？
 
 ### 1.10. spark中怎么解决内存泄漏问题？
+
+[Spark面对OOM问题的解决方法及优化总结 - CSDN博客](https://blog.csdn.net/yhb315279058/article/details/51035631)
 
 ### 1.11. Spark-submit模式yarn-cluster和yarn-client的区别
 
