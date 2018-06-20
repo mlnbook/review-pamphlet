@@ -8,6 +8,8 @@
 
 ### 1.3. Spark的Shuffle原理及调优？
 
+[用实例说明Spark stage划分原理 - bonelee - 博客园](https://www.cnblogs.com/bonelee/p/6039469.html)
+
 ![image](http://static.lovedata.net/jpg/2018/6/14/cf900b9cbd52d3a84fd8f04dba7c199f.jpg)
 
 ### 1.4.spark如何保证宕机迅速恢复

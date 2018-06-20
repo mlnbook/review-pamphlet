@@ -56,6 +56,8 @@
 
 ### 7.1 原理
 
+[HashMap实现原理分析 - CSDN博客](http://blog.csdn.net/vking_wang/article/details/14166593)
+
 ### 7.2 并发问题
 
 ## 8. 了解LinkedHashMap的应用吗

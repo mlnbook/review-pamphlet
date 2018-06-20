@@ -55,3 +55,12 @@ HDFS配置  用了三十多T，总共100多T
 
 ![image](http://static.lovedata.net/jpg/2018/6/19/0b4db3ab82c19c5daeceecfb5b9f4aa1.jpg)
 ![image](http://static.lovedata.net/jpg/2018/6/19/9f24a9c1bf3b94bbff69f7d240ce6564.jpg)
+
+## 7. 营销云
+
+赢销云是一款数据化营销管理工具，帮助企业进行营销数字化，实现营销流程自动化、营销全过程数
+据化，助力企业精准掌握每一个用户，善用每一份营销资源。 
+
+![image](http://static.lovedata.net/jpg/2018/6/20/66636b505fa3a677c3dc213a0aac15c7.jpg)
+
+营销活动、内容、  渠道 ， 、受众
