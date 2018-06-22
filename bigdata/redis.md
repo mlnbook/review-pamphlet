@@ -70,5 +70,15 @@ CAS，Check and Set 。乐观锁实现使用Redis 自有的watch multi exec等�
 5. 如果同时很多缓存失效，则会有缓存穿透问题
 6. [Redis的缓存策略和主键失效机制](http://www.cnblogs.com/binyue/p/3726842.html)
 7. 失效的内部实现 Redis 删除失效主键的方法主要有两种：
-    1. 消极方法（passive way），在主键被访问时如果发现它已经失效，那么就删除它
+    1. 消极方法（passive you
     2. 积极方法（active way），周期性地从设置了失效时间的主键中选择一部分失效的主键删除
+
+## 6. Redis所需内存 超过可用内存怎么办
+
+超过maxmemory这个时候就该配置文件中的maxmemory-policy出场了。
+其默认值是noeviction。
+下面我将列出当可用内存不足时，删除redis键具有的淘汰规则。
+
+![image](http://static.lovedata.net/jpg/2018/6/22/ef00eec0c7f656b24f0e120aa54a6e78.jpg)
+
+[Redis所需内存 超过可用内存怎么办 - 坦荡 - 博客园](https://www.cnblogs.com/tdws/p/5727633.html)

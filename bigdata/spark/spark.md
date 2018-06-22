@@ -74,7 +74,9 @@
 
 ### 1.22. dagschedule、taskschedule、schedulebankend实现原理；
 
-### 1.23. 宽依赖、窄依赖的概念？
+### 1.23. 宽依赖、窄依赖的概念？宽依赖、窄依赖的例子？以下图中所指的是何种依赖
+
+![image](http://static.lovedata.net/jpg/2018/6/22/cef170091c377f5f7840ca80a9f9287c.jpg)
 
 ### 1.24. Spark数据倾斜，怎么定位、怎么解决（阿里）；
 
